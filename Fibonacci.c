@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 int main() {
  int N,i;
  // les N premiers termes de la séquence de Fibonacci
