@@ -1,4 +1,5 @@
 # C-Basic
 Basic C codes
 Basic C codes for practice. Just part of my early learning journey.
-![TryHackMe Badge](https://tryhackme.com/api/v2/badges/public-profile?userPublicId=3562921)
+<img src="https://tryhackme-badges.s3.amazonaws.com/TheStig11.png" alt="Your Image Badge" />
+
