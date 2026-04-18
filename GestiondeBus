@@ -1,0 +1,240 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include<string.h>
+
+typedef struct station{
+int station_id;
+char station[20];
+char quartier[20];
+int voyageurs;
+struct station *next;
+struct station *prev;
+}station;
+
+station *Creestation(int station_id,char nom[],char quartier[],int voyageurs){
+station *nouveau=(station*)malloc(sizeof(station));
+nouveau->station_id=station_id;
+strcpy(nouveau->station,nom);
+strcpy(nouveau->quartier,quartier);
+nouveau->next=NULL;
+nouveau->prev=NULL;
+return nouveau;
+}
+
+void inserer_debut(station **tete, int station_id, char nom[], char quartier[], int voyageurs) {
+    station *nouveau = Creestation(station_id, nom, quartier, voyageurs);
+    if(!nouveau) return;
+
+    if(*tete == NULL) {
+        *tete = nouveau;
+        return;
+    }
+    nouveau->next = *tete;
+    (*tete)->prev = nouveau;
+    *tete = nouveau;
+}
+void inserer_fin(station **tete, int station_id, char nom[],char quartier[],int voyageurs) {
+station *nouveau = Creestation(station_id, nom, quartier, voyageurs);
+if(!nouveau) return;
+if(*tete == NULL) {
+*tete = nouveau;
+    return;}
+station *temp = *tete;
+while(temp->next != NULL) {
+temp = temp->next;
+    }
+temp->next=nouveau;
+nouveau->prev=temp;
+}
+
+void insere_apres(station **tete,int station_id,char nom[],char quartier[],int voyageurs,char pos[]){
+station *nouveau=Creestation(station_id, nom, quartier, voyageurs);
+if(!nouveau) return;
+
+ station *temp=*tete;
+ int trouve=0;
+ while (temp != NULL) {
+if (strcmp(temp->station, pos) == 0) {
+    trouve = 1;
+break;}
+        temp = temp->next;
+ }
+
+if(trouve){
+    nouveau->next=temp->next;
+    nouveau->prev=temp;
+}else printf("Non trouvee \n");
+
+}
+
+station* supprimer_tete(station *tete){
+if(tete==NULL){
+    printf("Liste Vide \n");
+    return NULL;
+}
+station *temp=tete;
+tete = tete->next;
+if(tete!=NULL){
+    tete->prev=NULL;
+}
+free(temp);
+return tete;
+}
+station* supprimer_fin(station *tete){
+if(tete ==NULL){
+    printf("Liste Vide \n");
+    return NULL;
+}
+station *temp=tete;
+if(temp->next==NULL){
+    free(temp); return NULL;
+}
+while(temp->next!=NULL){
+    temp=temp->next;
+}
+temp->prev->next=NULL;
+free(temp);
+return tete;
+}
+station* supprimer_id(station *tete,int id){
+
+if(tete==NULL) return NULL;
+station *temp=tete;
+
+
+ if(tete->station_id == id) {
+        station *temp = tete;
+        tete = tete->next;
+        if(tete != NULL) tete->prev = NULL;
+        free(temp);
+        return tete;
+    }
+while(temp->next!=NULL){
+  if(temp->station_id==id){
+    temp->next->prev=temp->prev;
+    temp->prev->next=temp->next;
+    free(temp);
+  return tete;
+  }
+  temp=temp->next;
+}
+  return tete;
+}
+
+void afficher_avant(station *tete){
+station *temp=tete;
+while(temp!=NULL){
+
+    printf("id : %d| nom de station : %s | nom du quartier : %s | nombre de voyageurs : %d \n",temp->station_id,temp->station,temp->quartier,temp->voyageurs);
+    temp=temp->next;
+}
+}
+
+void afficher_arriere(station *tete){
+station *temp=tete;
+while(temp->next!=NULL){
+    temp=temp->next;
+}
+printf("Liste en arriere : \n");
+while(temp!=NULL){
+
+    printf("id : %d| nom de station : %s | nom du quartier : %s | nombre de voyageurs : %d \n",temp->station_id,temp->station,temp->quartier,temp->voyageurs);
+    temp=temp->prev;
+}
+}
+station* recherche_id(station *tete,int id){
+if(!tete) return NULL;
+station *temp=tete;
+while(temp!=NULL){
+if(temp->station_id==id)
+    return temp;
+
+else temp=temp->next;
+}
+return NULL;
+}
+void afficher_quartier(station *tete, char quartier[]) {
+if(!tete) return;
+station *temp = tete;
+int trouve = 0;
+while(temp != NULL) {
+if(strcmp(temp->quartier, quartier) == 0) {
+    printf("id : %d | station : %s | quartier : %s | voyageurs : %d\n",temp->station_id, temp->station, temp->quartier, temp->voyageurs);
+trouve++;}
+temp = temp->next;
+    }
+if(!trouve) {
+    printf("Aucune station trouvee dans le quartier : %s\n", quartier);
+    }
+}
+
+void statistiques(station *tete){
+if(!tete) return;
+station *temp = tete;
+int nstations=0;
+int nvoyageurs=0;
+char gstation[20]="";
+int maxvoyageurs=0;
+
+while(temp != NULL) {
+nstations++;
+nvoyageurs=nvoyageurs+temp->voyageurs;
+if (maxvoyageurs<temp->voyageurs){  maxvoyageurs=temp->voyageurs;
+strcpy(gstation,temp->station);
+temp=temp->next;
+}}
+
+
+printf("Nombre total de stations : %d \n",nstations);
+printf("Nombre total de voyageurs : %d \n",nvoyageurs);
+printf("station avec plus grand nombre de  voyageurs : %s \n",gstation);
+
+}
+
+int main()
+{
+     station *tete = NULL;
+    // Inserer quelques stations
+printf("Insertion de stations:\n");
+inserer_fin(&tete, 1, "Gare", "Centre", 1500);
+inserer_fin(&tete, 2, "Mairie", "Nord", 800);
+inserer_fin(&tete, 3, "Universite", "Sud", 2000);
+inserer_fin(&tete, 4, "Hopital", "Nord", 1200);
+    //  Afficher la liste
+printf("Affichage de la liste:\n");
+afficher_avant(tete);
+    //Inserer au début
+printf("Insertion au debut :\n");
+inserer_debut(&tete, 5, "Bibliotheque", "Ouest", 600);
+afficher_avant(tete);
+        // Inserer après une station
+printf("Insertion apres 'Mairie':\n");
+insere_apres(&tete, 6,"Piscine","Nord",900,"Mairie");
+afficher_avant(tete);
+    //  Afficher en arrière
+printf(" Affichage en arriere:\n");
+afficher_arriere(tete);
+    //Rechercher une station
+printf(" Recherche de l'ID 3:\n");
+station *trouvee = recherche_id(tete,3);
+if(trouvee) {
+printf("Station trouvee: %s (ID: %d)\n",trouvee->station,trouvee->station_id);
+    }
+    //  Afficher les statistiques
+printf("Statistiques:\n");
+statistiques(tete);
+    //  Supprimer la tête
+tete = supprimer_tete(tete);
+afficher_avant(tete);
+    // Supprimer la fin
+printf("Suppression de la fin:\n");
+tete = supprimer_fin(tete);
+afficher_avant(tete);
+    // Supprimer par ID
+printf("Suppression de l'ID 2:\n");
+tete = supprimer_id(tete, 2);
+afficher_avant(tete);
+
+
+    return 0;
+}
